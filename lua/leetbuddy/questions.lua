@@ -88,7 +88,7 @@ local function update_status(sts, is_paid)
   return s .. c
 end
 
-function M.question_entry(o)
+local function gen_from_questions()
   local displayer = entry_display.create({
     separator = "",
     items = {
@@ -108,7 +108,8 @@ function M.question_entry(o)
     })
   end
 
-  local entry = {
+  return function(o)
+    local entry = {
       display = make_display,
       value = {
         frontendQuestionId = o.frontendQuestionId,
@@ -120,18 +121,12 @@ function M.question_entry(o)
       },
       ordinal = string.format("%s %s %s %s", o.frontendQuestionId, o.status, o.titleCn, o.difficulty),
     }
-    return entry
-end
-
-local function gen_from_questions()
-  return function(o)
-    local entry = M.question_entry(o)
     return make_entry.set_default_entry_mt(entry, opts)
   end
 end
 
 function M.setup_problem(problem)
-  local question_slug = string.format("%04d-%s", problem["value"]["frontendQuestionId"], problem["value"]["slug"])
+  local question_slug = string.format("%04d-%s", problem["frontendQuestionId"], problem["slug"])
 
   if not utils.find_file_inside_folder(config.directory, question_slug) then
     vim.api.nvim_command(":silent !mkdir " .. config.directory .. sep .. question_slug)
@@ -162,7 +157,7 @@ end
 local function select_problem(prompt_bufnr)
   actions.close(prompt_bufnr)
   local problem = action_state.get_selected_entry()
-  M.setup_problem(problem)
+  M.setup_problem(problem["value"])
 end
 
 local function filter_problems()

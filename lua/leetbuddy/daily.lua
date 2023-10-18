@@ -28,7 +28,7 @@ local function get_daily_question()
              difficulty
              isFavor
              status
-             titleSlug
+             slug: titleSlug
           }
        }}
   ]]
@@ -42,8 +42,7 @@ end
 
 function M.daily_question()
    local question = get_daily_question()
-   local question_entry = questions.question_entry(question)
-   questions.setup_problem(question_entry)
+   questions.setup_problem(question)
 end
 
 return M
