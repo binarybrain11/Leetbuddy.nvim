@@ -115,6 +115,7 @@ function M.display_results(is_executing, buffer, json_data, method, input_path)
       else
         insert(get_status_msg(json_data["status_msg"]))
         insert(json_data["runtime_error"])
+        insert(json_data["compile_error"])
         insert("")
 
         local std_output = json_data["std_output_list"]
